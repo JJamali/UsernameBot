@@ -47,7 +47,7 @@ async def update_member(member: discord.Member):
     new_nick = member.display_name
     my_list = list(new_nick)
 
-    if my_list[0] <= '@':
+    if my_list[0] < '0' or '9' < my_list[0] < 'A':
         my_list[0] = '☹'
 
         new_nick = "".join(my_list)
