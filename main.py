@@ -16,6 +16,15 @@ client = commands.Bot(command_prefix='!', intents=intents)
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    for guild in client.guilds:
+        await update_all_members_in_guild(guild)
+
+
+async def update_all_members_in_guild(guild: discord.Guild):
+    members = guild.members
+    for member in members:
+        if not member.guild_permissions.administrator:
+            await update_member(member)
 
 
 @client.event
@@ -24,11 +33,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('!banish'):
-        members = message.guild.members
-        print(members)
-        for member in members:
-            if not member.guild_permissions.administrator:
-                await update_member(member)
+        await update_all_members_in_guild(message.guild)
 
 
 @client.event
