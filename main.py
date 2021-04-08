@@ -29,6 +29,12 @@ async def update_all_members_in_guild(guild: discord.Guild):
     for member in members:
         if not member.guild_permissions.administrator:
             await update_member(member)
+            if blacklisted(member):
+                print(member.display_name)
+                try:
+                    await force_update_member(member)
+                except discord.errors.Forbidden:
+                    print("Missing permissions")
 
 
 @client.event
@@ -83,7 +89,6 @@ async def force_update_member(member: discord.Member):
 def blacklisted(member: discord.Member):
     cur.execute("SELECT EXISTS(SELECT 1 FROM blacklist WHERE userid=?)", (member.id,))
 
-    print(member.display_name)
     if cur.fetchone()[0]:
         return True
     return False
